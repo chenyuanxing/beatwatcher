@@ -143,7 +143,7 @@ func DoServerStuff(conn net.Conn) {
 	fmt.Println(remote, " connected!")
 	//for {
 		// 512 是数组的长度并且也是切片的初始长度，可增加。
-		buf := make([]byte, 512)
+		buf := make([]byte, 10240)
 		size, err := conn.Read(buf)
 		if err != nil {
 			fmt.Println("Read Error:", err.Error());
