@@ -3,9 +3,16 @@ package beatmanage
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
 	"fmt"
+	"github.com/bitly/go-simplejson"
+	"github.com/ghodss/yaml"
+	"io/ioutil"
+	"net"
+	"os"
 	"os/exec"
 	"strings"
+	"time"
 )
 
 // Name of this beat
@@ -83,6 +90,9 @@ func preDownloadandInstall(beat,beatV string){
 
 
 
+
+
+
 func executeCmd(cmd  *exec.Cmd,outputBuf1 *bufio.Reader) {
 
 	stdin2, err := cmd.StdinPipe()         //cmd上建立一个输入管道
@@ -110,5 +120,144 @@ func executeCmd(cmd  *exec.Cmd,outputBuf1 *bufio.Reader) {
 	}
 	fmt.Printf("%s\n", out.Bytes())  //输出执行结果
 
+}
+type Operate struct {
+	Operate   string  `json:"operate"`
+	Param     int     `json:"param"`
+	Id        string  `json:"id"`
+	Timestamp int64 `json:"timestamp"`
+	File      simplejson.Json     `json:"file"`
+	//other  []string
+}
+type BeatJson struct {
+	Name            string  `json:"name"`
+	JsonFile         string     `json:"jsonFile"`
+	ModulesJsonFile  string  `json:"modulesJsonFile"`
+}
+type Object struct {
+
+}
+
+func DoServerStuff(conn net.Conn) {
+	remote := conn.RemoteAddr().String()
+	fmt.Println(remote, " connected!")
+	//for {
+		// 512 是数组的长度并且也是切片的初始长度，可增加。
+		buf := make([]byte, 512)
+		size, err := conn.Read(buf)
+		if err != nil {
+			fmt.Println("Read Error:", err.Error());
+			return
+		}
+		//fmt.Println("data from client:",string(buf),"size:",size)
+		var operate Operate
+		s := string(buf[:size])
+		fmt.Println("get string:", s)
+		err = json.Unmarshal(buf[:size], &operate)
+		if err != nil {
+			fmt.Println("Unmarshal Error:", err.Error());
+			return
+		}
+		fmt.Println("Operate after Unmarshal:", operate)
+		var operateReturn Operate;
+		operateReturn.Timestamp =time.Now().Unix()
+
+		fmt.Println(operate.Operate)
+		if(operate.Operate=="start"){
+			fmt.Println("get in")
+			cmd := exec.Command("ls", "-l")
+			err = cmd.Run()
+			if err != nil {
+				fmt.Printf("Error %v executing command!", err)
+				os.Exit(1)
+			}
+			fmt.Printf("The command is %v", cmd)
+		}else if(operate.Operate=="stop"){
+			fmt.Println("get the operate stop")
+			operateReturn.Operate = "success"
+			operateReturn.Timestamp =time.Now().Unix()
+			buf, err = json.Marshal(operateReturn)
+			if err != nil {
+				fmt.Println("Marshal Error:", err.Error());
+				return
+			}
+			conn.Write(buf)
+			conn.Close()
+			os.Exit(1);
+		}else if(operate.Operate=="metricbeat"){
+			configName,err:=operate.File.Get("name").String();
+			if err != nil {
+				fmt.Println("MarshalJSON Error:", err.Error());
+				return
+			}
+			// 1 代表启动
+			if(operate.Param==1){
+				operate.File.Get("jsonFile").Get("metricbeat.config.modules").Set("path","${path.config}/"+operate.Operate+"_"+configName+"Modules.yml")
+				jsonFilebuf,err :=operate.File.Get("jsonFile").MarshalJSON()
+				if err != nil {
+					fmt.Println("MarshalJSON Error:\n", err.Error());
+					return
+				}
+				modulesJsonFilebuf,err :=operate.File.Get("modulesJsonFile").MarshalJSON()
+				if err != nil {
+					fmt.Println("MarshalJSON Error:\n", err.Error());
+					return
+				}
+
+				ymlfile, err :=yaml.JSONToYAML(jsonFilebuf)
+				if err != nil {
+					fmt.Println("JSONToYAML Error:", err.Error());
+					return
+				}
+
+				ModulesYmlFile, err :=yaml.JSONToYAML(modulesJsonFilebuf)
+				if err != nil {
+					fmt.Println("JSONToYAML Error:", err.Error());
+					return
+				}
+				// WriteFile 向文件 filename 中写入数据 data
+				// 如果文件不存在，则以 perm 权限创建该文件
+				// 如果文件存在，则先清空文件，然后再写入
+
+				ioutil.WriteFile(operate.Operate+"_"+configName+".yml",ymlfile,os.ModeAppend)
+				ioutil.WriteFile(operate.Operate+"_"+configName+"Modules.yml",ModulesYmlFile,os.ModeAppend)
+				if err != nil {
+					fmt.Println("WriteFile Error:", err.Error());
+					return
+				}
+
+				operateReturn.Operate = "success"
+
+				// 此处启动 待续..
+
+			}
+		}else if(operate.Operate=="filebeat"){
+			//启动
+			if(operate.Param==1){
+
+			}
+		}
+
+		operateReturn.Timestamp =time.Now().Unix()
+		buf, err = json.Marshal(operateReturn)
+		if err != nil {
+			fmt.Println("Marshal Error:", err.Error());
+			return
+		}
+		conn.Write(buf)
+		conn.Close()
+		//break
+	//}
+}
+
+/**
+ * 判断文件是否存在  存在返回 true 不存在返回false
+ */
+func checkFileIsExist(filename string) (bool) {
+	var exist = true;
+	if _, err := os.Stat(filename); os.IsNotExist(err) {
+		exist = false;
+	}
+	return exist;
 }
 
