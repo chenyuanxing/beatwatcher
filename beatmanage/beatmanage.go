@@ -142,18 +142,21 @@ func DoServerStuff(conn net.Conn) {
 	remote := conn.RemoteAddr().String()
 	fmt.Println(remote, " connected!")
 	//for {
-		// 512 是数组的长度并且也是切片的初始长度，可增加。
-		buf := make([]byte, 10240)
+		// 1024 是数组的长度并且也是切片的初始长度，可增加。
+		//buf := make([]byte, 1024)
+	    buf,err :=ioutil.ReadAll(conn)
+		if err != nil {
+			fmt.Println("ioutil.ReadAll Error:", err.Error());
+			return
+		}
 		size, err := conn.Read(buf)
 		if err != nil {
 			fmt.Println("Read Error:", err.Error());
 			return
 		}
-		//fmt.Println("data from client:",string(buf),"size:",size)
+		fmt.Println("data from client:",string(buf),"size:",size)
 		var operate Operate
-		s := string(buf[:size])
-		fmt.Println("get string:", s)
-		err = json.Unmarshal(buf[:size], &operate)
+		err = json.Unmarshal(buf, &operate)
 		if err != nil {
 			fmt.Println("Unmarshal Error:", err.Error());
 			return
