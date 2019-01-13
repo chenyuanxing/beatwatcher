@@ -149,7 +149,8 @@ func DoServerStuff(conn net.Conn) {
 			fmt.Println("ioutil.ReadAll Error:", err.Error());
 			return
 		}
-		size, err := conn.Read(buf)
+		//size, err := conn.Read(buf)
+		size:=len(buf)
 		if err != nil {
 			fmt.Println("Read Error:", err.Error());
 			return
