@@ -20,7 +20,7 @@ type Configuration struct {
 
 func init() {
 	fmt.Println("init config here-----------------")
-	file, _ := os.Open("conf.json")
+	file, _ := os.Open("conf/conf.json")
 	defer file.Close()
 	decoder := json.NewDecoder(file)
 	configuration := Configuration{}
