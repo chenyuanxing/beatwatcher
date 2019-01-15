@@ -203,7 +203,10 @@ func DoServerStuff(conn net.Conn) {
 			}
 			// 1 代表启动
 			if(operate.Param==1){
-				operate.File.Get("jsonFile").Get("metricbeat.config.modules").Set("path","${path.config}/modules.d"+operate.Operate+"_"+configName+"Modules.yml")
+				metricbeatYml:=operate.Operate+"_"+configName+".yml"
+				metricbeatModulesYml:=operate.Operate+"_"+configName+"Modules.yml"
+
+				operate.File.Get("jsonFile").Get("metricbeat.config.modules").Set("path","${path.config}/modules.d"+"/"+metricbeatModulesYml)
 				jsonFilebuf,err :=operate.File.Get("jsonFile").MarshalJSON()
 				if err != nil {
 					fmt.Println("MarshalJSON Error:\n", err.Error());
@@ -229,8 +232,7 @@ func DoServerStuff(conn net.Conn) {
 				// WriteFile 向文件 filename 中写入数据 data
 				// 如果文件不存在，则以 perm 权限创建该文件
 				// 如果文件存在，则先清空文件，然后再写入
-				metricbeatYml:=operate.Operate+"_"+configName+".yml"
-				metricbeatModulesYml:=operate.Operate+"_"+configName+"Modules.yml"
+
 
 				ioutil.WriteFile(conf.Config.MetricbeatFolder+"/"+metricbeatYml,ymlfile,os.ModeAppend)
 				ioutil.WriteFile(conf.Config.MetricbeatFolder+"/modules.d"+"/"+metricbeatModulesYml,ModulesYmlFile,os.ModeAppend)

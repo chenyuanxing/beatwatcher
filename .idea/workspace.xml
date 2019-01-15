@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="abe6f7b9-420f-4b5e-8eac-db3b0bddefed" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/beatmanage/beatmanage.go" beforeDir="false" afterPath="$PROJECT_DIR$/beatmanage/beatmanage.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util/test.go" beforeDir="false" afterPath="$PROJECT_DIR$/util/test.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -13,10 +12,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="275">
+            <state relative-caret-position="-100">
               <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
               <folding>
                 <element signature="e#14#73#0" expanded="true" />
@@ -37,12 +36,13 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/beatmanage/beatmanage.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="324">
-              <caret line="13" column="13" lean-forward="true" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
+            <state relative-caret-position="349">
+              <caret line="237" column="129" lean-forward="true" selection-start-line="237" selection-start-column="129" selection-end-line="237" selection-end-column="129" />
               <folding>
+                <element signature="e#20#188#0" expanded="true" />
                 <element signature="n#!!block;n#rpmInstalledList#0" />
                 <element signature="e#3227#3438#0" />
                 <element signature="e#3453#3600#0" />
@@ -167,10 +167,10 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="21" />
-    <option name="y" value="7" />
-    <option name="width" value="1574" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="18" />
+    <option name="y" value="355" />
+    <option name="width" value="1770" />
     <option name="height" value="990" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -217,7 +217,7 @@
     <property name="DefaultGoTemplateProperty" value="Go File" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1547546004150" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1547546785063" />
     <property name="go.gopath.indexing.explicitly.defined" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../elastic/beats" />
@@ -310,7 +310,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="98922000" />
+    <option name="totallyTimeSpent" value="99702000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -322,10 +322,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="21" y="7" width="1574" height="990" extended-state="0" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1354029" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.14072494" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -334,7 +334,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.22753793" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.2112676" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -594,19 +594,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/beatmanage/beatmanage.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="324">
-          <caret line="13" column="13" lean-forward="true" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
-          <folding>
-            <element signature="n#!!block;n#rpmInstalledList#0" />
-            <element signature="e#3227#3438#0" />
-            <element signature="e#3453#3600#0" />
-            <element signature="n#!!block;n#checkFileIsExist#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/beatmanage/heartbeat.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="350">
@@ -660,10 +647,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="275">
+        <state relative-caret-position="-100">
           <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
           <folding>
             <element signature="e#14#73#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/beatmanage/beatmanage.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="349">
+          <caret line="237" column="129" lean-forward="true" selection-start-line="237" selection-start-column="129" selection-end-line="237" selection-end-column="129" />
+          <folding>
+            <element signature="e#20#188#0" expanded="true" />
+            <element signature="n#!!block;n#rpmInstalledList#0" />
+            <element signature="e#3227#3438#0" />
+            <element signature="e#3453#3600#0" />
+            <element signature="n#!!block;n#checkFileIsExist#0" />
           </folding>
         </state>
       </provider>
