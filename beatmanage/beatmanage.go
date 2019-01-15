@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/beatwatcher/conf"
+	"../conf"
 	"github.com/bitly/go-simplejson"
 	"github.com/ghodss/yaml"
 	"io/ioutil"
