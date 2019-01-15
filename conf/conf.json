@@ -1,0 +1,8 @@
+{
+  "Users": ["UserA","UserB"],
+  "Groups": ["GroupA"],
+  "Metricbeat": "metricbeat",
+  "MetricbeatFolder": "metricbeat-6.5.4-linux-x86_64",
+  "Filebeat": "filebeat",
+  "FilebeatFolder": "filebeat-6.5.4-linux-x86_64"
+}

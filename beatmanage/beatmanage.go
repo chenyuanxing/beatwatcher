@@ -5,27 +5,31 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/beatwatcher/conf"
 	"github.com/bitly/go-simplejson"
 	"github.com/ghodss/yaml"
 	"io/ioutil"
 	"net"
 	"os"
 	"os/exec"
-	"strings"
 	"time"
 )
 
 // Name of this beat
 
+var cmdslice [] *exec.Cmd
 
 func init() {
 	fmt.Println("get in here --------------------------")
+	cmdslice = make([]*exec.Cmd, 5)
+
 	//curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.3.2-x86_64.rpm
 	//sudo rpm -vi filebeat-6.3.2-x86_64.rpm
 
 
 	//curl -L -O https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-6.3.2-x86_64.rpm
 	//sudo rpm -vi metricbeat-6.3.2-x86_64.rpm
+/**
 	var metricbeat = "metricbeat"
 	var metricbeatT = "metricbeat-6.3.2"
 	var metricbeatV = "metricbeat-6.3.2-x86_64"
@@ -42,6 +46,7 @@ func init() {
 	if strings.Contains(strings.ToLower(InstalledList),strings.ToLower(filebeatT))==false {
 		preDownloadandInstall(filebeat,filebeatV);
 	}
+*/
 
 }
 
@@ -61,19 +66,23 @@ func rpmInstalledList() string{
 	return out.String();
 }
 
-
-func preDownloadandInstall(beat,beatV string){
+func getYcmdReader() (*bufio.Reader,error)   {
 	yescmd := exec.Command("echo", "y","y","y","y","y","y","y","y","y","y")
 	stdout1, err := yescmd.StdoutPipe()       //yescmd上建立一个输出管道，为*io.Reader类型
 	if err != nil {
 		fmt.Printf("Error: Can not obtain the stdout pipe for command: %s", err)
-		return
+		return nil,err
 	}
 	if err := yescmd.Start(); err != nil {
 		fmt.Printf("Error: The command can not running: %s\n", err)
-		return
+		return nil,err
 	}
 	outputBuf1 := bufio.NewReader(stdout1)  //避免数据过多带来的困扰，使用带缓冲的读取器来获取输出管道中的数据
+	return outputBuf1,nil
+}
+
+func preDownloadandInstall(beat,beatV string){
+
 	beatPKG := beatV+".rpm"
 	url := "https://artifacts.elastic.co/downloads/beats/"+beat+"/"+beatPKG
 
@@ -83,14 +92,15 @@ func preDownloadandInstall(beat,beatV string){
 	fmt.Println("down:    "+"curl", "-L","-O",url)
 	fmt.Println("rpmcmd:    "+"sudo","rpm", "-vi",beatPKG)
 
+	outputBuf1,err := getYcmdReader()
+	if err != nil {
+		fmt.Printf("Error: getYcmdReader Error: %s", err)
+		return
+	}
 	executeCmd(downloadcmd,outputBuf1)
 	executeCmd(rpmcmd,outputBuf1)
 
 }
-
-
-
-
 
 
 func executeCmd(cmd  *exec.Cmd,outputBuf1 *bufio.Reader) {
@@ -133,9 +143,6 @@ type BeatJson struct {
 	Name            string  `json:"name"`
 	JsonFile         string     `json:"jsonFile"`
 	ModulesJsonFile  string  `json:"modulesJsonFile"`
-}
-type Object struct {
-
 }
 
 func DoServerStuff(conn net.Conn) {
@@ -196,7 +203,7 @@ func DoServerStuff(conn net.Conn) {
 			}
 			// 1 代表启动
 			if(operate.Param==1){
-				operate.File.Get("jsonFile").Get("metricbeat.config.modules").Set("path","${path.config}/"+operate.Operate+"_"+configName+"Modules.yml")
+				operate.File.Get("jsonFile").Get("metricbeat.config.modules").Set("path","${path.config}/modules.d"+operate.Operate+"_"+configName+"Modules.yml")
 				jsonFilebuf,err :=operate.File.Get("jsonFile").MarshalJSON()
 				if err != nil {
 					fmt.Println("MarshalJSON Error:\n", err.Error());
@@ -222,9 +229,11 @@ func DoServerStuff(conn net.Conn) {
 				// WriteFile 向文件 filename 中写入数据 data
 				// 如果文件不存在，则以 perm 权限创建该文件
 				// 如果文件存在，则先清空文件，然后再写入
+				metricbeatYml:=operate.Operate+"_"+configName+".yml"
+				metricbeatModulesYml:=operate.Operate+"_"+configName+"Modules.yml"
 
-				ioutil.WriteFile(operate.Operate+"_"+configName+".yml",ymlfile,os.ModeAppend)
-				ioutil.WriteFile(operate.Operate+"_"+configName+"Modules.yml",ModulesYmlFile,os.ModeAppend)
+				ioutil.WriteFile(conf.Config.MetricbeatFolder+"/"+metricbeatYml,ymlfile,os.ModeAppend)
+				ioutil.WriteFile(conf.Config.MetricbeatFolder+"/modules.d"+"/"+metricbeatModulesYml,ModulesYmlFile,os.ModeAppend)
 				if err != nil {
 					fmt.Println("WriteFile Error:", err.Error());
 					return
@@ -233,7 +242,18 @@ func DoServerStuff(conn net.Conn) {
 				operateReturn.Operate = "success"
 
 				// 此处启动 待续..
+				//  ./metricbeat-6.5.4-linux-x86_64/metricbeat -e -c ./metricbeat-6.5.4-linux-x86_64/metricbeat_new_Collection.yml
+				launchcmd := exec.Command("./"+conf.Config.MetricbeatFolder+"/"+conf.Config.Metricbeat, "-c","./"+conf.Config.MetricbeatFolder+"/"+metricbeatYml)
 
+				fmt.Println("launchcmd ")
+				fmt.Println( "./"+conf.Config.MetricbeatFolder+"/"+conf.Config.Metricbeat, "-c","./"+conf.Config.MetricbeatFolder+"/"+metricbeatYml)
+
+				err =launchcmd.Start()
+				if err != nil {
+					fmt.Println("launchcmd start Error:", err.Error());
+					return
+				}
+				cmdslice = append(cmdslice,launchcmd)
 			}
 		}else if(operate.Operate=="filebeat"){
 			//启动
