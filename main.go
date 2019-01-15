@@ -4,7 +4,7 @@ import (
 	"./beatmanage"
 	"flag"
 	"fmt"
-	"github.com/beatwatcher/conf"
+	"./conf"
 	"net"
 	"strconv"
 )
