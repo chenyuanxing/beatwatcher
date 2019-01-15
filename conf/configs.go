@@ -8,6 +8,8 @@ import (
 
 var Config  = Configuration{}
 
+var Uuid = "1234567890default"
+
 type Configuration struct {
 	Users               []string
 	Groups              []string

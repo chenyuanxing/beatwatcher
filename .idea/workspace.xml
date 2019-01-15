@@ -3,6 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="abe6f7b9-420f-4b5e-8eac-db3b0bddefed" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/beatmanage/beatmanage.go" beforeDir="false" afterPath="$PROJECT_DIR$/beatmanage/beatmanage.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/beatmanage/heartbeat.go" beforeDir="false" afterPath="$PROJECT_DIR$/beatmanage/heartbeat.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/conf/configs.go" beforeDir="false" afterPath="$PROJECT_DIR$/conf/configs.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/test.go" beforeDir="false" afterPath="$PROJECT_DIR$/util/test.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -15,8 +19,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-100">
-              <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+            <state relative-caret-position="425">
+              <caret line="36" column="20" lean-forward="true" selection-start-line="36" selection-start-column="20" selection-end-line="36" selection-end-column="20" />
               <folding>
                 <element signature="e#14#73#0" expanded="true" />
               </folding>
@@ -25,12 +29,12 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/util/ymljson.go">
+        <entry file="file://$PROJECT_DIR$/util/test.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="200">
-              <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+            <state relative-caret-position="527">
+              <caret line="164" column="13" lean-forward="true" selection-start-line="164" selection-start-column="13" selection-end-line="164" selection-end-column="13" />
               <folding>
-                <element signature="e#14#58#0" expanded="true" />
+                <element signature="e#14#138#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -39,13 +43,14 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/beatmanage/beatmanage.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="349">
-              <caret line="237" column="129" lean-forward="true" selection-start-line="237" selection-start-column="129" selection-end-line="237" selection-end-column="129" />
+            <state relative-caret-position="1591">
+              <caret line="284" column="43" selection-start-line="284" selection-start-column="43" selection-end-line="284" selection-end-column="43" />
               <folding>
                 <element signature="e#20#188#0" expanded="true" />
                 <element signature="n#!!block;n#rpmInstalledList#0" />
-                <element signature="e#3227#3438#0" />
-                <element signature="e#3453#3600#0" />
+                <element signature="n#!!block;n#getYcmdReader#0" />
+                <element signature="n#!!block;n#preDownloadandInstall#0" />
+                <element signature="n#!!block;n#executeCmd#0" />
                 <element signature="n#!!block;n#checkFileIsExist#0" />
               </folding>
             </state>
@@ -53,22 +58,19 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://C:/Go/src/os/exec/exec.go">
+        <entry file="file://C:/Go/src/encoding/json/encode.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="268">
-              <caret line="341" column="14" selection-start-line="341" selection-start-column="14" selection-end-line="341" selection-end-column="14" />
+            <state relative-caret-position="225">
+              <caret line="156" column="5" selection-start-line="156" selection-start-column="5" selection-end-line="156" selection-end-column="5" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/util/test.go">
+        <entry file="file://C:/Go/src/os/exec/exec.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="124">
-              <caret line="5" column="13" lean-forward="true" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
-              <folding>
-                <element signature="e#528#533#0" />
-              </folding>
+            <state relative-caret-position="-1050">
+              <caret line="53" column="5" selection-start-line="53" selection-start-column="5" selection-end-line="53" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -85,8 +87,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/beatmanage/heartbeat.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="350">
-              <caret line="14" column="76" lean-forward="true" selection-start-line="14" selection-start-column="76" selection-end-line="14" selection-end-column="76" />
+            <state relative-caret-position="302">
+              <caret line="17" column="41" lean-forward="true" selection-start-line="17" selection-start-column="41" selection-end-line="17" selection-end-column="41" />
               <folding>
                 <element signature="e#20#61#0" expanded="true" />
               </folding>
@@ -95,19 +97,28 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/conf/configs.go">
+        <entry file="file://C:/Go/src/builtin/builtin.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="450">
-              <caret line="22" column="40" lean-forward="true" selection-start-line="22" selection-start-column="40" selection-end-line="22" selection-end-column="40" />
+            <state relative-caret-position="233">
+              <caret line="70" column="5" selection-start-line="70" selection-start-column="5" selection-end-line="70" selection-end-column="5" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/conf/conf.json">
+        <entry file="file://C:/Go/src/os/exec.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="175">
-              <caret line="7" column="1" lean-forward="true" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="1" />
+            <state relative-caret-position="233">
+              <caret line="17" column="4" selection-start-line="17" selection-start-column="4" selection-end-line="17" selection-end-column="4" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/conf/configs.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="150">
+              <caret line="10" column="4" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="4" />
             </state>
           </provider>
         </entry>
@@ -138,6 +149,9 @@
       <find>Unmarshal jsonfile Error:</find>
       <find>get string</find>
       <find>Operate after Unmarshal:</find>
+      <find>json</find>
+      <find>.marshal</find>
+      <find>unmarshal</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -153,24 +167,24 @@
         <option value="$PROJECT_DIR$/beatmanage.go" />
         <option value="$PROJECT_DIR$/beatmanage/111.http" />
         <option value="$PROJECT_DIR$/beatmanage/manageStart.go" />
-        <option value="$PROJECT_DIR$/beatmanage/heartbeat.go" />
         <option value="$PROJECT_DIR$/beatmanage/register.go" />
         <option value="$PROJECT_DIR$/util/ymljson.go" />
-        <option value="$PROJECT_DIR$/main.go" />
         <option value="$PROJECT_DIR$/util/Param.go" />
         <option value="$PROJECT_DIR$/config/conf.json" />
         <option value="$PROJECT_DIR$/config/configs.go" />
-        <option value="$PROJECT_DIR$/conf/configs.go" />
         <option value="$PROJECT_DIR$/test2.go" />
+        <option value="$PROJECT_DIR$/conf/configs.go" />
+        <option value="$PROJECT_DIR$/main.go" />
+        <option value="$PROJECT_DIR$/beatmanage/heartbeat.go" />
         <option value="$PROJECT_DIR$/util/test.go" />
         <option value="$PROJECT_DIR$/beatmanage/beatmanage.go" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="18" />
-    <option name="y" value="355" />
-    <option name="width" value="1770" />
+    <option name="x" value="397" />
+    <option name="y" value="33" />
+    <option name="width" value="1418" />
     <option name="height" value="990" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -217,7 +231,7 @@
     <property name="DefaultGoTemplateProperty" value="Go File" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1547546785063" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1547563287119" />
     <property name="go.gopath.indexing.explicitly.defined" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../elastic/beats" />
@@ -245,7 +259,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Go Build.go build test2.go">
+  <component name="RunManager" selected="Go Build.go build test.go">
     <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="beatwatcher" />
       <working_directory value="$PROJECT_DIR$/" />
@@ -284,8 +298,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.go build test2.go" />
         <item itemvalue="Go Build.go build test.go" />
+        <item itemvalue="Go Build.go build test2.go" />
         <item itemvalue="Go Build.go build ymljson.go" />
         <item itemvalue="Go Build.go build main.go" />
       </list>
@@ -310,7 +324,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="99702000" />
+    <option name="totallyTimeSpent" value="105142000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -459,13 +473,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/Go/src/encoding/json/encode.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="246">
-          <caret line="156" column="5" selection-start-line="156" selection-start-column="5" selection-end-line="156" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/Go/src/encoding/json/stream.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="228">
@@ -549,20 +556,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/Go/src/os/exec/exec.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="268">
-          <caret line="341" column="14" selection-start-line="341" selection-start-column="14" selection-end-line="341" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Go/src/builtin/builtin.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="206">
-          <caret line="239" column="58" lean-forward="true" selection-start-line="239" selection-start-column="58" selection-end-line="239" selection-end-column="58" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/Go/src/bufio/bufio.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="290">
@@ -577,13 +570,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/Go/src/os/exec.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="290">
-          <caret line="114" column="18" selection-start-line="114" selection-start-column="18" selection-end-line="114" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/test2.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="325">
@@ -594,44 +580,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/beatmanage/heartbeat.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="350">
-          <caret line="14" column="76" lean-forward="true" selection-start-line="14" selection-start-column="76" selection-end-line="14" selection-end-column="76" />
-          <folding>
-            <element signature="e#20#61#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/beatmanage/register.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/conf/conf.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="175">
           <caret line="7" column="1" lean-forward="true" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/conf/configs.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="22" column="40" lean-forward="true" selection-start-line="22" selection-start-column="40" selection-end-line="22" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util/test.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="124">
-          <caret line="5" column="13" lean-forward="true" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
-          <folding>
-            <element signature="e#528#533#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -645,25 +597,88 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/beatmanage/register.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Go/src/os/exec/exec.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1050">
+          <caret line="53" column="5" selection-start-line="53" selection-start-column="5" selection-end-line="53" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Go/src/os/exec.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="233">
+          <caret line="17" column="4" selection-start-line="17" selection-start-column="4" selection-end-line="17" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Go/src/encoding/json/encode.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="156" column="5" selection-start-line="156" selection-start-column="5" selection-end-line="156" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Go/src/builtin/builtin.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="233">
+          <caret line="70" column="5" selection-start-line="70" selection-start-column="5" selection-end-line="70" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-100">
-          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+        <state relative-caret-position="425">
+          <caret line="36" column="20" lean-forward="true" selection-start-line="36" selection-start-column="20" selection-end-line="36" selection-end-column="20" />
           <folding>
             <element signature="e#14#73#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/conf/configs.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="4" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/util/test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="527">
+          <caret line="164" column="13" lean-forward="true" selection-start-line="164" selection-start-column="13" selection-end-line="164" selection-end-column="13" />
+          <folding>
+            <element signature="e#14#138#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/beatmanage/heartbeat.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="302">
+          <caret line="17" column="41" lean-forward="true" selection-start-line="17" selection-start-column="41" selection-end-line="17" selection-end-column="41" />
+          <folding>
+            <element signature="e#20#61#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/beatmanage/beatmanage.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="349">
-          <caret line="237" column="129" lean-forward="true" selection-start-line="237" selection-start-column="129" selection-end-line="237" selection-end-column="129" />
+        <state relative-caret-position="1591">
+          <caret line="284" column="43" selection-start-line="284" selection-start-column="43" selection-end-line="284" selection-end-column="43" />
           <folding>
             <element signature="e#20#188#0" expanded="true" />
             <element signature="n#!!block;n#rpmInstalledList#0" />
-            <element signature="e#3227#3438#0" />
-            <element signature="e#3453#3600#0" />
+            <element signature="n#!!block;n#getYcmdReader#0" />
+            <element signature="n#!!block;n#preDownloadandInstall#0" />
+            <element signature="n#!!block;n#executeCmd#0" />
             <element signature="n#!!block;n#checkFileIsExist#0" />
           </folding>
         </state>

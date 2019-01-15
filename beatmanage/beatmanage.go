@@ -16,12 +16,34 @@ import (
 )
 
 // Name of this beat
+type collectionStatus struct {
+	Agentuuid string    `json:"agentuuid"`
+	Configname string      `json:"configname"`
+	Pid int           `json:"pid"`
+	Status string    `json:"status"`
+	Other string     `json:"other"`
+}
 
-var cmdslice [] *exec.Cmd
+// collection 状态
+var CollectionStatusSlice [] collectionStatus
 
 func init() {
 	fmt.Println("get in here --------------------------")
-	cmdslice = make([]*exec.Cmd, 5)
+	//CollectionStatusSlice = make([]collectionStatus,0)
+
+	var cStatus collectionStatus;
+	cStatus.Pid = 1111
+	cStatus.Status = "on"
+	cStatus.Configname = "testconfigname"
+	cStatus.Agentuuid = conf.Uuid
+	CollectionStatusSlice = append(CollectionStatusSlice,cStatus)
+
+	var cStatus2 collectionStatus;
+	cStatus2.Pid = 2222
+	cStatus2.Status = "off"
+	cStatus2.Configname = "testconfigname2"
+	cStatus2.Agentuuid = conf.Uuid
+	CollectionStatusSlice = append(CollectionStatusSlice,cStatus2)
 
 	//curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.3.2-x86_64.rpm
 	//sudo rpm -vi filebeat-6.3.2-x86_64.rpm
@@ -255,7 +277,13 @@ func DoServerStuff(conn net.Conn) {
 					fmt.Println("launchcmd start Error:", err.Error());
 					return
 				}
-				cmdslice = append(cmdslice,launchcmd)
+				var cStatus collectionStatus;
+				cStatus.Pid = launchcmd.Process.Pid
+				cStatus.Status = "on"
+				cStatus.Configname = configName
+				cStatus.Agentuuid = conf.Uuid
+				CollectionStatusSlice = append(CollectionStatusSlice,cStatus)
+
 			}
 		}else if(operate.Operate=="filebeat"){
 			//启动

@@ -8,6 +8,7 @@ import (
 	"github.com/ghodss/yaml"
 	"io/ioutil"
 	"os"
+	"../beatmanage"
 )
 
 
@@ -150,6 +151,16 @@ func testConfig()  {
 	fmt.Println("testing")
 	fmt.Println(conf.Config.MetricbeatFolder)
 }
+func testMar(){
+
+	beatmanage.CollectionStatusSlice = append(beatmanage.CollectionStatusSlice, )
+	buf,err := json.Marshal(beatmanage.CollectionStatusSlice)
+	if err != nil {
+		fmt.Println("Heart - Marshal Error: ", err.Error());
+		return
+	}
+	fmt.Println(string(buf))
+}
 func main() {
-	testConfig()
+	testMar()
 }

@@ -4,6 +4,7 @@ import (
 	"./beatmanage"
 	"flag"
 	"fmt"
+	"github.com/beatwatcher/conf"
 	"net"
 	"strconv"
 )
@@ -33,6 +34,7 @@ func main() {
 	fmt.Println("user:",*user)
 	fmt.Println("tag:",*tag)
 
+	conf.Uuid = *key
 
 	fmt.Println("Starting the server...")
 	listener, err := net.Listen("tcp", "0.0.0.0:"+string(*port))
