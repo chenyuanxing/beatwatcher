@@ -172,14 +172,13 @@ func DoServerStuff(conn net.Conn) {
 	fmt.Println(remote, " connected!")
 	//for {
 		// 1024 是数组的长度并且也是切片的初始长度，可增加。
-		//buf := make([]byte, 1024)
-	    buf,err :=ioutil.ReadAll(conn)
-		if err != nil {
-			fmt.Println("ioutil.ReadAll Error:", err.Error());
-			return
-		}
-		//size, err := conn.Read(buf)
-		size:=len(buf)
+		buf := make([]byte, 5120)
+
+		//一定要等到有error或EOF的时候才会返回结果，因此只能等到客户端退出时才会返回结果。 因此不用此方法
+		//buf,err :=ioutil.ReadAll(conn)
+
+		size, err := conn.Read(buf)
+
 		if err != nil {
 			fmt.Println("Read Error:", err.Error());
 			return
@@ -299,6 +298,7 @@ func DoServerStuff(conn net.Conn) {
 			return
 		}
 		conn.Write(buf)
+
 		conn.Close()
 		//break
 	//}
@@ -315,3 +315,6 @@ func checkFileIsExist(filename string) (bool) {
 	return exist;
 }
 
+func checkCollectionIsRunning(status collectionStatus){
+
+}
