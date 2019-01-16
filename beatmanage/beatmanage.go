@@ -261,6 +261,11 @@ func DoServerStuff(conn net.Conn) {
 				fmt.Println( "./"+conf.Config.MetricbeatFolder+"/"+conf.Config.Metricbeat, "-c","./"+conf.Config.MetricbeatFolder+"/"+metricbeatYml)
 
 				err =launchcmd.Start()
+				go func() {
+					err:=launchcmd.Wait()
+					fmt.Println(err)
+				}()
+
 				if err != nil {
 					fmt.Println("launchcmd start Error:", err.Error());
 					return
