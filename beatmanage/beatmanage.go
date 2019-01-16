@@ -12,6 +12,7 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -293,7 +294,7 @@ func DoServerStuff(conn net.Conn) {
 			for i :=range CollectionStatusSlice{
 				if CollectionStatusSlice[i].Pid==stopPid {
 					if CollectionStatusSlice[i].Status=="on" {
-						cmd := exec.Command("kill","-9",string(stopPid))
+						cmd := exec.Command("kill","-9",strconv.Itoa(stopPid))
 						err:=cmd.Run();
 						if err != nil {
 							fmt.Println("kill Pid failed Error:", err.Error());
@@ -308,7 +309,7 @@ func DoServerStuff(conn net.Conn) {
 			for i :=range CollectionStatusSlice{
 				if CollectionStatusSlice[i].Pid==stopPid {
 					if CollectionStatusSlice[i].Status=="on" {
-						cmd := exec.Command("kill","-9",string(stopPid))
+						cmd := exec.Command("kill","-9",strconv.Itoa(stopPid))
 						err:=cmd.Run();
 						if err != nil {
 							fmt.Println("kill Pid failed Error:", err.Error());
@@ -344,12 +345,12 @@ func checkFileIsExist(filename string) (bool) {
 }
 
 func updateCollectionStatus(status *collectionStatus){
-	cmd := exec.Command("cat","/proc/"+string(status.Pid)+"/cmdline")
+	cmd := exec.Command("cat","/proc/"+strconv.Itoa(status.Pid)+"/cmdline")
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	err:=cmd.Run()
 	if err != nil {
-		fmt.Printf("Error: execute cmd "+"cat","/proc/"+string(status.Pid)+"/cmdline "+":\n %s", err)
+		fmt.Printf("Error: execute cmd "+"cat","/proc/"+strconv.Itoa(status.Pid)+"/cmdline "+":\n %s", err)
 		status.Status = "off"
 		return
 	}
