@@ -26,26 +26,15 @@ type collectionStatus struct {
 	Other string     `json:"other"`
 }
 
-// collection 状态
+// collection 状态  cmds为启动的收集器的exec.Cmd 的集合 ，在添加时，必须同时操作
+// collection 状态一旦改为 off ，将不能还原为 on ，同时，会将cmds中对应的cmd 删除
 var CollectionStatusSlice [] collectionStatus
+var cmds [] *exec.Cmd
+
 
 func init() {
 	fmt.Println("get in here --------------------------")
 	//CollectionStatusSlice = make([]collectionStatus,0)
-
-	var cStatus collectionStatus;
-	cStatus.Pid = 1111
-	cStatus.Status = "on"
-	cStatus.Configname = "testconfigname"
-	cStatus.Agentuuid = conf.Uuid
-	CollectionStatusSlice = append(CollectionStatusSlice,cStatus)
-
-	var cStatus2 collectionStatus;
-	cStatus2.Pid = 2222
-	cStatus2.Status = "off"
-	cStatus2.Configname = "testconfigname2"
-	cStatus2.Agentuuid = conf.Uuid
-	CollectionStatusSlice = append(CollectionStatusSlice,cStatus2)
 
 	//curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.3.2-x86_64.rpm
 	//sudo rpm -vi filebeat-6.3.2-x86_64.rpm
@@ -276,12 +265,15 @@ func DoServerStuff(conn net.Conn) {
 					fmt.Println("launchcmd start Error:", err.Error());
 					return
 				}
+
 				var cStatus collectionStatus;
 				cStatus.Pid = launchcmd.Process.Pid
 				cStatus.Status = "on"
 				cStatus.Configname = configName
 				cStatus.Agentuuid = conf.Uuid
 				CollectionStatusSlice = append(CollectionStatusSlice,cStatus)
+
+				cmds = append(cmds, launchcmd)
 
 		}else if(operate.Operate=="filebeat"){
 			//启动
@@ -290,34 +282,10 @@ func DoServerStuff(conn net.Conn) {
 
 		}else if(operate.Operate=="metricbeat_stop"){
 			//停止
-			stopPid := operate.Param
-			for i :=range CollectionStatusSlice{
-				if CollectionStatusSlice[i].Pid==stopPid {
-					if CollectionStatusSlice[i].Status=="on" {
-						cmd := exec.Command("kill","-9",strconv.Itoa(stopPid))
-						err:=cmd.Run();
-						if err != nil {
-							fmt.Println("kill Pid failed Error:", err.Error());
-							return
-						}
-					}
-				}
-			}
+			operateReturn.Operate = killbeat(operate.Param)
 		}else if(operate.Operate=="filebeat_stop"){
 			//停止
-			stopPid := operate.Param
-			for i :=range CollectionStatusSlice{
-				if CollectionStatusSlice[i].Pid==stopPid {
-					if CollectionStatusSlice[i].Status=="on" {
-						cmd := exec.Command("kill","-9",strconv.Itoa(stopPid))
-						err:=cmd.Run();
-						if err != nil {
-							fmt.Println("kill Pid failed Error:", err.Error());
-							return
-						}
-					}
-				}
-			}
+			operateReturn.Operate = killbeat(operate.Param)
 		}
 
 		operateReturn.Timestamp =time.Now().Unix()
@@ -360,4 +328,28 @@ func updateCollectionStatus(status *collectionStatus){
 		// 说明该pid虽然存在，但是不是之前启动的pid
 		status.Status = "off"
 	}
+}
+
+// 杀掉某个状态为on的 beat 进程
+func killbeat(pid int) string{
+	stopPid := pid
+	index :=-1
+	for i :=range cmds{
+		if cmds[i].Process.Pid == stopPid{
+			index = i
+			break
+		}
+	}
+	if index >=0 {
+		//杀死该进程
+		err:=cmds[index].Process.Kill()
+		if err != nil {
+			return "kill_failed"
+		}
+		//删除cmds中被删除的元素
+		cmds =  append(cmds[:index], cmds[index+1:]...)      // 最后面的“...”不能省略
+	}else {
+		return "notfind"
+	}
+	return "success"
 }
