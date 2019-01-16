@@ -1,17 +1,18 @@
 package beatmanage
 
 import (
+	"../conf"
 	"bufio"
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"../conf"
 	"github.com/bitly/go-simplejson"
 	"github.com/ghodss/yaml"
 	"io/ioutil"
 	"net"
 	"os"
 	"os/exec"
+	"strings"
 	"time"
 )
 
@@ -222,8 +223,6 @@ func DoServerStuff(conn net.Conn) {
 				fmt.Println("MarshalJSON Error:", err.Error());
 				return
 			}
-			// 1 代表启动
-			if(operate.Param==1){
 				metricbeatYml:=operate.Operate+"_"+configName+".yml"
 				metricbeatModulesYml:=operate.Operate+"_"+configName+"Modules.yml"
 
@@ -283,11 +282,23 @@ func DoServerStuff(conn net.Conn) {
 				cStatus.Agentuuid = conf.Uuid
 				CollectionStatusSlice = append(CollectionStatusSlice,cStatus)
 
-			}
 		}else if(operate.Operate=="filebeat"){
 			//启动
-			if(operate.Param==1){
 
+		}else if(operate.Operate=="metricbeat_stop"){
+			//停止
+			stopPid := operate.Param
+			for i :=range CollectionStatusSlice{
+				if CollectionStatusSlice[i].Pid==stopPid {
+					if CollectionStatusSlice[i].Status=="on" {
+						cmd := exec.Command("kill","-9",string(stopPid))
+						err:=cmd.Run();
+						if err != nil {
+							fmt.Println("kill Pid failed Error:", err.Error());
+							return
+						}
+					}
+				}
 			}
 		}
 
@@ -315,6 +326,20 @@ func checkFileIsExist(filename string) (bool) {
 	return exist;
 }
 
-func checkCollectionIsRunning(status collectionStatus){
-
+func updateCollectionStatus(status *collectionStatus){
+	cmd := exec.Command("cat","/proc/"+string(status.Pid)+"/cmdline")
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	err:=cmd.Run()
+	if err != nil {
+		fmt.Printf("Error: execute cmd "+"cat","/proc/"+string(status.Pid)+"/cmdline "+":\n %s", err)
+		status.Status = "off"
+		return
+	}
+	if strings.Contains(out.String(),status.Configname){
+		status.Status = "on"
+	}else {
+		// 说明该pid虽然存在，但是不是之前启动的pid
+		status.Status = "off"
+	}
 }

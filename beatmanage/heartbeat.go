@@ -15,6 +15,13 @@ func Heart(uuid,user string)  {
 
 		params.Set("userId",user)
 
+		// 发送心跳前将collection状态更新,只检查状态为on的
+		for i :=range CollectionStatusSlice{
+			if CollectionStatusSlice[i].Status=="on" {
+				updateCollectionStatus(&CollectionStatusSlice[i])
+			}
+		}
+
 		buf,err := json.Marshal(CollectionStatusSlice)
 		if err != nil {
 			fmt.Println("Heart - Marshal Error: ", err.Error());
