@@ -26,15 +26,26 @@ type collectionStatus struct {
 	Other string     `json:"other"`
 }
 
-// collection 状态  cmds为启动的收集器的exec.Cmd 的集合 ，在添加时，必须同时操作
-// collection 状态一旦改为 off ，将不能还原为 on ，同时，会将cmds中对应的cmd 删除
+// collection 状态
 var CollectionStatusSlice [] collectionStatus
-var cmds [] *exec.Cmd
-
 
 func init() {
 	fmt.Println("get in here --------------------------")
 	//CollectionStatusSlice = make([]collectionStatus,0)
+
+	var cStatus collectionStatus;
+	cStatus.Pid = 1111
+	cStatus.Status = "on"
+	cStatus.Configname = "testconfigname"
+	cStatus.Agentuuid = conf.Uuid
+	CollectionStatusSlice = append(CollectionStatusSlice,cStatus)
+
+	var cStatus2 collectionStatus;
+	cStatus2.Pid = 2222
+	cStatus2.Status = "off"
+	cStatus2.Configname = "testconfigname2"
+	cStatus2.Agentuuid = conf.Uuid
+	CollectionStatusSlice = append(CollectionStatusSlice,cStatus2)
 
 	//curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.3.2-x86_64.rpm
 	//sudo rpm -vi filebeat-6.3.2-x86_64.rpm
@@ -42,24 +53,22 @@ func init() {
 
 	//curl -L -O https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-6.3.2-x86_64.rpm
 	//sudo rpm -vi metricbeat-6.3.2-x86_64.rpm
-/**
-	var metricbeat = "metricbeat"
-	var metricbeatT = "metricbeat-6.3.2"
-	var metricbeatV = "metricbeat-6.3.2-x86_64"
-
-	var filebeat = "filebeat"
-	var filebeatT = "filebeat-6.3.2"
-	var filebeatV = "filebeat-6.3.2-x86_64"
-	//判断是否需要下载安装，若是
-	InstalledList := rpmInstalledList()
-
-	if strings.Contains(strings.ToLower(InstalledList),strings.ToLower(metricbeatT))==false {
-		preDownloadandInstall(metricbeat,metricbeatV);
-	}
-	if strings.Contains(strings.ToLower(InstalledList),strings.ToLower(filebeatT))==false {
-		preDownloadandInstall(filebeat,filebeatV);
-	}
-*/
+	/**
+		var metricbeat = "metricbeat"
+		var metricbeatT = "metricbeat-6.3.2"
+		var metricbeatV = "metricbeat-6.3.2-x86_64"
+		var filebeat = "filebeat"
+		var filebeatT = "filebeat-6.3.2"
+		var filebeatV = "filebeat-6.3.2-x86_64"
+		//判断是否需要下载安装，若是
+		InstalledList := rpmInstalledList()
+		if strings.Contains(strings.ToLower(InstalledList),strings.ToLower(metricbeatT))==false {
+			preDownloadandInstall(metricbeat,metricbeatV);
+		}
+		if strings.Contains(strings.ToLower(InstalledList),strings.ToLower(filebeatT))==false {
+			preDownloadandInstall(filebeat,filebeatV);
+		}
+	*/
 
 }
 
@@ -162,137 +171,42 @@ func DoServerStuff(conn net.Conn) {
 	remote := conn.RemoteAddr().String()
 	fmt.Println(remote, " connected!")
 	//for {
-		// 1024 是数组的长度并且也是切片的初始长度，可增加。
-		buf := make([]byte, 5120)
+	// 1024 是数组的长度并且也是切片的初始长度，可增加。
+	buf := make([]byte, 5120)
 
-		//一定要等到有error或EOF的时候才会返回结果，因此只能等到客户端退出时才会返回结果。 因此不用此方法
-		//buf,err :=ioutil.ReadAll(conn)
+	//一定要等到有error或EOF的时候才会返回结果，因此只能等到客户端退出时才会返回结果。 因此不用此方法
+	//buf,err :=ioutil.ReadAll(conn)
 
-		size, err := conn.Read(buf)
+	size, err := conn.Read(buf)
 
+	if err != nil {
+		fmt.Println("Read Error:", err.Error());
+		return
+	}
+	fmt.Println("data from client:",string(buf),"size:",size)
+	var operate Operate
+	err = json.Unmarshal(buf[:size], &operate)
+	if err != nil {
+		fmt.Println("Unmarshal Error:", err.Error());
+		return
+	}
+	fmt.Println("Operate after Unmarshal:", operate)
+	var operateReturn Operate;
+	operateReturn.Timestamp =time.Now().Unix()
+
+	fmt.Println(operate.Operate)
+	if(operate.Operate=="start"){
+		fmt.Println("get in")
+		cmd := exec.Command("ls", "-l")
+		err = cmd.Run()
 		if err != nil {
-			fmt.Println("Read Error:", err.Error());
-			return
+			fmt.Printf("Error %v executing command!", err)
+			os.Exit(1)
 		}
-		fmt.Println("data from client:",string(buf),"size:",size)
-		var operate Operate
-		err = json.Unmarshal(buf[:size], &operate)
-		if err != nil {
-			fmt.Println("Unmarshal Error:", err.Error());
-			return
-		}
-		fmt.Println("Operate after Unmarshal:", operate)
-		var operateReturn Operate;
-		operateReturn.Timestamp =time.Now().Unix()
-
-		fmt.Println(operate.Operate)
-		if(operate.Operate=="start"){
-			fmt.Println("get in")
-			cmd := exec.Command("ls", "-l")
-			err = cmd.Run()
-			if err != nil {
-				fmt.Printf("Error %v executing command!", err)
-				os.Exit(1)
-			}
-			fmt.Printf("The command is %v", cmd)
-		}else if(operate.Operate=="stop"){
-			fmt.Println("get the operate stop")
-			operateReturn.Operate = "success"
-			operateReturn.Timestamp =time.Now().Unix()
-			buf, err = json.Marshal(operateReturn)
-			if err != nil {
-				fmt.Println("Marshal Error:", err.Error());
-				return
-			}
-			conn.Write(buf)
-			conn.Close()
-			os.Exit(1);
-		}else if(operate.Operate=="metricbeat"){
-			configName,err:=operate.File.Get("name").String();
-			if err != nil {
-				fmt.Println("MarshalJSON Error:", err.Error());
-				return
-			}
-				metricbeatYml:=operate.Operate+"_"+configName+".yml"
-				metricbeatModulesYml:=operate.Operate+"_"+configName+"Modules.yml"
-
-				operate.File.Get("jsonFile").Get("metricbeat.config.modules").Set("path","${path.config}/modules.d"+"/"+metricbeatModulesYml)
-				jsonFilebuf,err :=operate.File.Get("jsonFile").MarshalJSON()
-				if err != nil {
-					fmt.Println("MarshalJSON Error:\n", err.Error());
-					return
-				}
-				modulesJsonFilebuf,err :=operate.File.Get("modulesJsonFile").MarshalJSON()
-				if err != nil {
-					fmt.Println("MarshalJSON Error:\n", err.Error());
-					return
-				}
-
-				ymlfile, err :=yaml.JSONToYAML(jsonFilebuf)
-				if err != nil {
-					fmt.Println("JSONToYAML Error:", err.Error());
-					return
-				}
-
-				ModulesYmlFile, err :=yaml.JSONToYAML(modulesJsonFilebuf)
-				if err != nil {
-					fmt.Println("JSONToYAML Error:", err.Error());
-					return
-				}
-				// WriteFile 向文件 filename 中写入数据 data
-				// 如果文件不存在，则以 perm 权限创建该文件
-				// 如果文件存在，则先清空文件，然后再写入
-
-
-				ioutil.WriteFile(conf.Config.MetricbeatFolder+"/"+metricbeatYml,ymlfile,os.ModeAppend)
-				ioutil.WriteFile(conf.Config.MetricbeatFolder+"/modules.d"+"/"+metricbeatModulesYml,ModulesYmlFile,os.ModeAppend)
-				if err != nil {
-					fmt.Println("WriteFile Error:", err.Error());
-					return
-				}
-
-				operateReturn.Operate = "success"
-
-				// 此处启动 待续..
-				//  ./metricbeat-6.5.4-linux-x86_64/metricbeat -e -c ./metricbeat-6.5.4-linux-x86_64/metricbeat_new_Collection.yml
-				launchcmd := exec.Command("./"+conf.Config.MetricbeatFolder+"/"+conf.Config.Metricbeat, "-c","./"+conf.Config.MetricbeatFolder+"/"+metricbeatYml)
-
-				fmt.Println("launchcmd ")
-				fmt.Println( "./"+conf.Config.MetricbeatFolder+"/"+conf.Config.Metricbeat, "-c","./"+conf.Config.MetricbeatFolder+"/"+metricbeatYml)
-
-				err =launchcmd.Start()
-				go func() {
-					err:=launchcmd.Wait()
-					fmt.Println(err)
-				}()
-
-				if err != nil {
-					fmt.Println("launchcmd start Error:", err.Error());
-					return
-				}
-
-				var cStatus collectionStatus;
-				cStatus.Pid = launchcmd.Process.Pid
-				cStatus.Status = "on"
-				cStatus.Configname = configName
-				cStatus.Agentuuid = conf.Uuid
-				CollectionStatusSlice = append(CollectionStatusSlice,cStatus)
-
-				cmds = append(cmds, launchcmd)
-
-		}else if(operate.Operate=="filebeat"){
-			//启动
-
-
-
-		}else if(operate.Operate=="metricbeat_stop"){
-			//停止
-			operateReturn.Operate = killbeat(operate.Param)
-		}else if(operate.Operate=="filebeat_stop"){
-			//停止
-			operateReturn.Operate = killbeat(operate.Param)
-		}
-
+		fmt.Printf("The command is %v", cmd)
+	}else if(operate.Operate=="stop"){
+		fmt.Println("get the operate stop")
+		operateReturn.Operate = "success"
 		operateReturn.Timestamp =time.Now().Unix()
 		buf, err = json.Marshal(operateReturn)
 		if err != nil {
@@ -300,9 +214,124 @@ func DoServerStuff(conn net.Conn) {
 			return
 		}
 		conn.Write(buf)
-
 		conn.Close()
-		//break
+		os.Exit(1);
+	}else if(operate.Operate=="metricbeat"){
+		configName,err:=operate.File.Get("name").String();
+		if err != nil {
+			fmt.Println("MarshalJSON Error:", err.Error());
+			return
+		}
+		metricbeatYml:=operate.Operate+"_"+configName+".yml"
+		metricbeatModulesYml:=operate.Operate+"_"+configName+"Modules.yml"
+
+		operate.File.Get("jsonFile").Get("metricbeat.config.modules").Set("path","${path.config}/modules.d"+"/"+metricbeatModulesYml)
+		jsonFilebuf,err :=operate.File.Get("jsonFile").MarshalJSON()
+		if err != nil {
+			fmt.Println("MarshalJSON Error:\n", err.Error());
+			return
+		}
+		modulesJsonFilebuf,err :=operate.File.Get("modulesJsonFile").MarshalJSON()
+		if err != nil {
+			fmt.Println("MarshalJSON Error:\n", err.Error());
+			return
+		}
+
+		ymlfile, err :=yaml.JSONToYAML(jsonFilebuf)
+		if err != nil {
+			fmt.Println("JSONToYAML Error:", err.Error());
+			return
+		}
+
+		ModulesYmlFile, err :=yaml.JSONToYAML(modulesJsonFilebuf)
+		if err != nil {
+			fmt.Println("JSONToYAML Error:", err.Error());
+			return
+		}
+		// WriteFile 向文件 filename 中写入数据 data
+		// 如果文件不存在，则以 perm 权限创建该文件
+		// 如果文件存在，则先清空文件，然后再写入
+
+
+		ioutil.WriteFile(conf.Config.MetricbeatFolder+"/"+metricbeatYml,ymlfile,os.ModeAppend)
+		ioutil.WriteFile(conf.Config.MetricbeatFolder+"/modules.d"+"/"+metricbeatModulesYml,ModulesYmlFile,os.ModeAppend)
+		if err != nil {
+			fmt.Println("WriteFile Error:", err.Error());
+			return
+		}
+
+		operateReturn.Operate = "success"
+
+		// 此处启动 待续..
+		//  ./metricbeat-6.5.4-linux-x86_64/metricbeat -e -c ./metricbeat-6.5.4-linux-x86_64/metricbeat_new_Collection.yml
+		launchcmd := exec.Command("./"+conf.Config.MetricbeatFolder+"/"+conf.Config.Metricbeat, "-c","./"+conf.Config.MetricbeatFolder+"/"+metricbeatYml)
+
+		fmt.Println("launchcmd ")
+		fmt.Println( "./"+conf.Config.MetricbeatFolder+"/"+conf.Config.Metricbeat, "-c","./"+conf.Config.MetricbeatFolder+"/"+metricbeatYml)
+
+		err =launchcmd.Start()
+		go func() {
+			err = launchcmd.Wait()
+			fmt.Println(err)
+		}()
+		if err != nil {
+			fmt.Println("launchcmd start Error:", err.Error());
+			return
+		}
+		var cStatus collectionStatus;
+		cStatus.Pid = launchcmd.Process.Pid
+		cStatus.Status = "on"
+		cStatus.Configname = configName
+		cStatus.Agentuuid = conf.Uuid
+		CollectionStatusSlice = append(CollectionStatusSlice,cStatus)
+
+	}else if(operate.Operate=="filebeat"){
+		//启动
+
+
+
+	}else if(operate.Operate=="metricbeat_stop"){
+		//停止
+		stopPid := operate.Param
+		for i :=range CollectionStatusSlice{
+			if CollectionStatusSlice[i].Pid==stopPid {
+				if CollectionStatusSlice[i].Status=="on" {
+					cmd := exec.Command("kill","-9",strconv.Itoa(stopPid))
+					err:=cmd.Run();
+					if err != nil {
+						fmt.Println("kill Pid failed Error:", err.Error());
+						return
+					}
+				}
+			}
+		}
+	}else if(operate.Operate=="filebeat_stop"){
+		//停止
+		stopPid := operate.Param
+		for i :=range CollectionStatusSlice{
+			if CollectionStatusSlice[i].Pid==stopPid {
+				if CollectionStatusSlice[i].Status=="on" {
+					cmd := exec.Command("kill","-9",strconv.Itoa(stopPid))
+					err:=cmd.Run();
+					if err != nil {
+						fmt.Println("kill Pid failed Error:", err.Error());
+						return
+					}
+				}
+			}
+		}
+	}
+
+	operateReturn.Timestamp =time.Now().Unix()
+	buf, err = json.Marshal(operateReturn)
+	if err != nil {
+		fmt.Println("Marshal Error:", err.Error());
+		return
+	}
+	conn.Write(buf)
+
+	conn.Close()
+	//break
 	//}
 }
 
@@ -333,28 +362,4 @@ func updateCollectionStatus(status *collectionStatus){
 		// 说明该pid虽然存在，但是不是之前启动的pid
 		status.Status = "off"
 	}
-}
-
-// 杀掉某个状态为on的 beat 进程
-func killbeat(pid int) string{
-	stopPid := pid
-	index :=-1
-	for i :=range cmds{
-		if cmds[i].Process.Pid == stopPid{
-			index = i
-			break
-		}
-	}
-	if index >=0 {
-		//杀死该进程
-		err:=cmds[index].Process.Kill()
-		if err != nil {
-			return "kill_failed"
-		}
-		//删除cmds中被删除的元素
-		cmds =  append(cmds[:index], cmds[index+1:]...)      // 最后面的“...”不能省略
-	}else {
-		return "notfind"
-	}
-	return "success"
 }
