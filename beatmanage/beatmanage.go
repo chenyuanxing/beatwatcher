@@ -185,7 +185,7 @@ func DoServerStuff(conn net.Conn) {
 		}
 		fmt.Println("data from client:",string(buf),"size:",size)
 		var operate Operate
-		err = json.Unmarshal(buf, &operate)
+		err = json.Unmarshal(buf[:size], &operate)
 		if err != nil {
 			fmt.Println("Unmarshal Error:", err.Error());
 			return

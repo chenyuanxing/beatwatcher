@@ -4,6 +4,10 @@
 
 # Runtime data
 
-# work env
-.idea/
+# working env
+
+.idea
+
+
+# testing
 util/test.go
