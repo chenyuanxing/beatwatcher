@@ -285,7 +285,24 @@ func DoServerStuff(conn net.Conn) {
 		}else if(operate.Operate=="filebeat"){
 			//启动
 
+
+
 		}else if(operate.Operate=="metricbeat_stop"){
+			//停止
+			stopPid := operate.Param
+			for i :=range CollectionStatusSlice{
+				if CollectionStatusSlice[i].Pid==stopPid {
+					if CollectionStatusSlice[i].Status=="on" {
+						cmd := exec.Command("kill","-9",string(stopPid))
+						err:=cmd.Run();
+						if err != nil {
+							fmt.Println("kill Pid failed Error:", err.Error());
+							return
+						}
+					}
+				}
+			}
+		}else if(operate.Operate=="filebeat_stop"){
 			//停止
 			stopPid := operate.Param
 			for i :=range CollectionStatusSlice{
