@@ -33,20 +33,6 @@ func init() {
 	fmt.Println("get in here --------------------------")
 	//CollectionStatusSlice = make([]collectionStatus,0)
 
-	var cStatus collectionStatus;
-	cStatus.Pid = 1111
-	cStatus.Status = "on"
-	cStatus.Configname = "testconfigname"
-	cStatus.Agentuuid = conf.Uuid
-	CollectionStatusSlice = append(CollectionStatusSlice,cStatus)
-
-	var cStatus2 collectionStatus;
-	cStatus2.Pid = 2222
-	cStatus2.Status = "off"
-	cStatus2.Configname = "testconfigname2"
-	cStatus2.Agentuuid = conf.Uuid
-	CollectionStatusSlice = append(CollectionStatusSlice,cStatus2)
-
 	//curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.3.2-x86_64.rpm
 	//sudo rpm -vi filebeat-6.3.2-x86_64.rpm
 
@@ -266,7 +252,7 @@ func DoServerStuff(conn net.Conn) {
 		//  ./metricbeat-6.5.4-linux-x86_64/metricbeat -e -c ./metricbeat-6.5.4-linux-x86_64/metricbeat_new_Collection.yml
 		launchcmd := exec.Command("./"+conf.Config.MetricbeatFolder+"/"+conf.Config.Metricbeat, "-c","./"+conf.Config.MetricbeatFolder+"/"+metricbeatYml)
 
-		fmt.Println("launchcmd ")
+		fmt.Println("launch metricbeat cmd ")
 		fmt.Println( "./"+conf.Config.MetricbeatFolder+"/"+conf.Config.Metricbeat, "-c","./"+conf.Config.MetricbeatFolder+"/"+metricbeatYml)
 
 		err =launchcmd.Start()
@@ -287,8 +273,73 @@ func DoServerStuff(conn net.Conn) {
 
 	}else if(operate.Operate=="filebeat"){
 		//启动
+		configName,err:=operate.File.Get("name").String();
+		if err != nil {
+			fmt.Println("MarshalJSON Error:", err.Error());
+			return
+		}
+		filebeatYml:=operate.Operate+"_"+configName+".yml"
+		filebeatModulesYml:=operate.Operate+"_"+configName+"Modules.yml"
+
+		operate.File.Get("jsonFile").Get("filebeat.config.modules").Set("path","${path.config}/modules.d"+"/"+filebeatModulesYml)
+		jsonFilebuf,err :=operate.File.Get("jsonFile").MarshalJSON()
+		if err != nil {
+			fmt.Println("MarshalJSON Error:\n", err.Error());
+			return
+		}
+		modulesJsonFilebuf,err :=operate.File.Get("modulesJsonFile").MarshalJSON()
+		if err != nil {
+			fmt.Println("MarshalJSON Error:\n", err.Error());
+			return
+		}
+
+		ymlfile, err :=yaml.JSONToYAML(jsonFilebuf)
+		if err != nil {
+			fmt.Println("JSONToYAML Error:", err.Error());
+			return
+		}
+
+		ModulesYmlFile, err :=yaml.JSONToYAML(modulesJsonFilebuf)
+		if err != nil {
+			fmt.Println("JSONToYAML Error:", err.Error());
+			return
+		}
+		// WriteFile 向文件 filename 中写入数据 data
+		// 如果文件不存在，则以 perm 权限创建该文件
+		// 如果文件存在，则先清空文件，然后再写入
 
 
+		ioutil.WriteFile(conf.Config.FilebeatFolder+"/"+filebeatYml,ymlfile,os.ModeAppend)
+		ioutil.WriteFile(conf.Config.FilebeatFolder+"/modules.d"+"/"+filebeatModulesYml,ModulesYmlFile,os.ModeAppend)
+		if err != nil {
+			fmt.Println("WriteFile Error:", err.Error());
+			return
+		}
+
+		operateReturn.Operate = "success"
+
+		// 此处启动 待续..
+		//  ./filebeat-6.5.4-linux-x86_64/filebeat -e -c ./filebeat-6.5.4-linux-x86_64/filebeat_new_Collection.yml
+		launchcmd := exec.Command("./"+conf.Config.FilebeatFolder+"/"+conf.Config.Filebeat, "-c","./"+conf.Config.FilebeatFolder+"/"+filebeatYml)
+
+		fmt.Println("launch filebeat cmd ")
+		fmt.Println( "./"+conf.Config.FilebeatFolder+"/"+conf.Config.Filebeat, "-c","./"+conf.Config.FilebeatFolder+"/"+filebeatYml)
+
+		err =launchcmd.Start()
+		go func() {
+			err = launchcmd.Wait()
+			fmt.Println(err)
+		}()
+		if err != nil {
+			fmt.Println("launchcmd start Error:", err.Error());
+			return
+		}
+		var cStatus collectionStatus;
+		cStatus.Pid = launchcmd.Process.Pid
+		cStatus.Status = "on"
+		cStatus.Configname = configName
+		cStatus.Agentuuid = conf.Uuid
+		CollectionStatusSlice = append(CollectionStatusSlice,cStatus)
 
 	}else if(operate.Operate=="metricbeat_stop"){
 		//停止
