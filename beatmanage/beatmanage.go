@@ -180,7 +180,7 @@ func DoServerStuff(conn net.Conn) {
 	fmt.Println("Operate after Unmarshal:", operate)
 	var operateReturn Operate;
 	operateReturn.Timestamp =time.Now().Unix()
-
+	operateReturn.Operate = "success"
 	fmt.Println(operate.Operate)
 	if(operate.Operate=="start"){
 		fmt.Println("get in")
@@ -193,7 +193,6 @@ func DoServerStuff(conn net.Conn) {
 		fmt.Printf("The command is %v", cmd)
 	}else if(operate.Operate=="stop"){
 		fmt.Println("get the operate stop")
-		operateReturn.Operate = "success"
 		operateReturn.Timestamp =time.Now().Unix()
 		buf, err = json.Marshal(operateReturn)
 		if err != nil {
@@ -246,8 +245,6 @@ func DoServerStuff(conn net.Conn) {
 			fmt.Println("WriteFile Error:", err.Error());
 			return
 		}
-
-		operateReturn.Operate = "success"
 
 		// 此处启动 待续..
 		//  ./metricbeat-6.5.4-linux-x86_64/metricbeat -e -c ./metricbeat-6.5.4-linux-x86_64/metricbeat_new_Collection.yml
@@ -316,8 +313,6 @@ func DoServerStuff(conn net.Conn) {
 			fmt.Println("WriteFile Error:", err.Error());
 			return
 		}
-
-		operateReturn.Operate = "success"
 
 		// 此处启动 待续..
 		//  ./filebeat-6.5.4-linux-x86_64/filebeat -e -c ./filebeat-6.5.4-linux-x86_64/filebeat_new_Collection.yml
@@ -388,15 +383,15 @@ func DoServerStuff(conn net.Conn) {
 		for {
 			l, isPrefix, err := reader.ReadLine()
 			buffer.Write(l)
+			// If we've reached the end of the line, add "\n"
+			if !isPrefix {
+				buffer.Write([]byte("\n"))
+			}
 			if i>=lines{
 				break
 			}
 			i = i+1
 			if buffer.Len()> 32*1024{
-				break
-			}
-			// If we've reached the end of the line, stop reading.
-			if !isPrefix {
 				break
 			}
 			// If we're just at the EOF, break
