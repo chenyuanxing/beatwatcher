@@ -27,6 +27,9 @@ func Heart(uuid,user string)  {
 			fmt.Println("Heart - Marshal Error: ", err.Error());
 			return
 		}
+		fmt.Println("heart message:")
+		fmt.Println(params)
+
 		params.Set("collectionStatuses",string(buf))
 		http.PostForm("http://10.108.210.194:8080/agents/aliveAgent",params)
 
