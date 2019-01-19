@@ -9,6 +9,7 @@ import (
 	"github.com/bitly/go-simplejson"
 	"github.com/ghodss/yaml"
 	"io/ioutil"
+	"log"
 	"net"
 	"os"
 	"os/exec"
@@ -145,7 +146,7 @@ type Operate struct {
 	Id        string  `json:"id"`
 	Timestamp int64 `json:"timestamp"`
 	File      simplejson.Json     `json:"file"`
-	//other  []string
+	Other     string  `json:"other"`
 }
 type BeatJson struct {
 	Name            string  `json:"name"`
@@ -371,6 +372,39 @@ func DoServerStuff(conn net.Conn) {
 				}
 			}
 		}
+	}else if(operate.Operate=="readfile_test"){
+		// 读取文件
+		// operate.Param 为读取行数，operate.Other为文件路径
+		lines := operate.Param
+
+		file, err := os.Open(operate.Other)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer file.Close()
+		reader := bufio.NewReader(file)
+		var buffer bytes.Buffer
+		i := 0;
+		for {
+			l, isPrefix, err := reader.ReadLine()
+			buffer.Write(l)
+			if i>=lines{
+				break
+			}
+			i = i+1
+			if buffer.Len()> 32*1024{
+				break
+			}
+			// If we've reached the end of the line, stop reading.
+			if !isPrefix {
+				break
+			}
+			// If we're just at the EOF, break
+			if err != nil {
+				break
+			}
+		}
+		operateReturn.Other = buffer.String()
 	}
 
 	operateReturn.Timestamp =time.Now().Unix()
