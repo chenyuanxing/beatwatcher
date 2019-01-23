@@ -28,8 +28,8 @@ func Heart(uuid,user string)  {
 			return
 		}
 		params.Set("collectionStatuses",string(buf))
-		fmt.Println("heart message:")
-		fmt.Println(params)
+		//fmt.Println("heart message:")
+		//fmt.Println(params)
 		http.PostForm("http://10.108.210.194:8080/agents/aliveAgent",params)
 
 	}
