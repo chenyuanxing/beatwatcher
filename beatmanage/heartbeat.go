@@ -19,7 +19,7 @@ func Heart(uuid,user string)  {
 		for i :=range CollectionStatusSlice{
 			if CollectionStatusSlice[i].Status=="on" {
 
-				//updateCollectionStatus(&CollectionStatusSlice[i])
+				updateCollectionStatus(&CollectionStatusSlice[i])
 			}
 		}
 
