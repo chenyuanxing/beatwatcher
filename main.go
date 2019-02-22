@@ -1,12 +1,13 @@
 package main
 
 import (
-	"./beatmanage"
+	"github.com/beatwatcher/beatmanage"
 	"flag"
 	"fmt"
-	"./conf"
+	"github.com/beatwatcher/conf"
 	"net"
 	"strconv"
+
 )
 
 type addrobject struct {

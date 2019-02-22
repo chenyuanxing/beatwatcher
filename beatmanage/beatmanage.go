@@ -1,7 +1,7 @@
 package beatmanage
 
 import (
-	"../conf"
+	"github.com/beatwatcher/conf"
 	"bufio"
 	"bytes"
 	"encoding/json"
