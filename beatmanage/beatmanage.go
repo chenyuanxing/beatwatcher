@@ -192,6 +192,7 @@ func DoServerStuff(conn net.Conn) {
 		}
 		fmt.Printf("The command is %v", cmd)
 	}else if(operate.Operate=="stop"){
+		//  并且停止所有收集器 并停止运行beatwatcher
 		fmt.Println("get the operate stop")
 		operateReturn.Timestamp =time.Now().Unix()
 		buf, err = json.Marshal(operateReturn)
@@ -199,8 +200,22 @@ func DoServerStuff(conn net.Conn) {
 			fmt.Println("Marshal Error:", err.Error());
 			return
 		}
+		for i :=range CollectionStatusSlice{
+			stopPid := CollectionStatusSlice[i].Pid
+				if CollectionStatusSlice[i].Status=="on" {
+					cmd := exec.Command("kill","-9",strconv.Itoa(stopPid))
+					err:=cmd.Run();
+					if err != nil {
+						fmt.Println("kill Pid failed Error:", err.Error());
+						return
+					}
+				}
+		}
+
 		conn.Write(buf)
 		conn.Close()
+
+
 		os.Exit(1);
 	}else if(operate.Operate=="metricbeat"){
 		configName,err:=operate.File.Get("name").String();
